@@ -25,4 +25,4 @@ def test_endpoint(value):
 
 
 if __name__ == '__main__':
-    app.run(port=500)
+    app.run(port=5000)
