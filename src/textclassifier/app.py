@@ -7,7 +7,10 @@ app = Flask(__name__)
 tokenizer = RobertaTokenizerFast.from_pretrained("arpanghoshal/EmoRoBERTa")
 model = TFRobertaForSequenceClassification.from_pretrained("arpanghoshal/EmoRoBERTa")
 emotion_classifier = pipeline('sentiment-analysis', model='arpanghoshal/EmoRoBERTa')
-sentiment_classifier = pipeline(model="finiteautomata/bertweet-base-sentiment-analysis")
+sentiment_classifier = pipeline(
+    "sentiment-analysis",
+    model="cardiffnlp/twitter-roberta-base-sentiment-latest"
+)
 
 
 sentiments = ("negative", "positive")
@@ -16,10 +19,8 @@ sentiments = ("negative", "positive")
 @app.post('/classify')
 def classify_text():
     body = request.json
-    data = [row['text'] for row in body['conversation']]
-
     return {
-        'emotions': emotion_classifier(data),
+        'emotions': emotion_classifier(body['messages']),
         'overall_sentiment': sentiment_classifier([
             body['transcript']
         ])[0]
@@ -27,4 +28,4 @@ def classify_text():
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=8000)
