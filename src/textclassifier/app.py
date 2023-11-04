@@ -19,12 +19,17 @@ sentiments = ("negative", "positive")
 @app.post('/classify')
 def classify_text():
     body = request.json
-    return {
-        'emotions': emotion_classifier(body['messages']),
-        'overall_sentiment': sentiment_classifier([
-            body['transcript']
-        ])[0]
-    }
+    result = {}
+    messages = body.get('messages')
+    transcript = body.get('transcript')
+
+    if messages:
+        result['emotions'] = emotion_classifier(messages)
+
+    if transcript:
+        result['overall_sentiment'] = sentiment_classifier(transcript)
+
+    return result
 
 
 if __name__ == '__main__':
